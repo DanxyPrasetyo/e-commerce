@@ -1,0 +1,855 @@
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DanxyTools V8.3</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+/>
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  html,
+  body {
+    font-family: "Poppins", sans-serif;
+    background-color: #0f172a;
+    color: #e0e7ff;
+    overflow-x: hidden;
+  }
+  /* Matrix style animated background */
+  #matrix-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    background: #0f172a;
+  }
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #1e293b;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #3b82f6;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2563eb;
+  }
+  /* Button hover glow */
+  .btn-glow:hover {
+    box-shadow: 0 0 12px #3b82f6, 0 0 24px #2563eb;
+    transform: scale(1.05);
+  }
+  /* Sidebar slide animation */
+  .sidebar-enter {
+    transform: translateX(-100%);
+  }
+  .sidebar-enter-active {
+    transform: translateX(0);
+    transition: transform 300ms ease-in-out;
+  }
+  .sidebar-exit {
+    transform: translateX(0);
+  }
+  .sidebar-exit-active {
+    transform: translateX(-100%);
+    transition: transform 300ms ease-in-out;
+  }
+</style>
+</head>
+<body class="relative min-h-screen flex flex-col">
+
+<canvas id="matrix-canvas"></canvas>
+<button
+  id="sidebarToggle"
+  aria-label="Toggle sidebar"
+  class="fixed top-4 left-4 z-50 p-3 rounded-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-lg hover:from-indigo-700 hover:to-blue-600 transition-transform btn-glow focus:outline-none focus:ring-4 focus:ring-blue-400"
+>
+  <i class="fas fa-bars fa-lg"></i>
+</button>
+
+
+<aside
+  id="sidebar"
+  class="fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-indigo-900 via-indigo-800 to-indigo-900 shadow-xl transform -translate-x-full transition-transform duration-300 ease-in-out z-40 flex flex-col"
+  aria-label="Sidebar navigation"
+>
+  <div class="flex items-center justify-center py-6 border-b border-indigo-700">
+    <img
+      src="https://files.catbox.moe/xbhphs.png"
+      alt="DanxyStore Logo Tools V8.3, blue and white stylized text with gear icon"
+      class="h-14 w-auto"
+      draggable="false"
+    />
+  </div>
+  <nav class="flex flex-col flex-grow px-6 py-4 space-y-4 text-indigo-200">
+    <button
+      data-page="home"
+      class="sidebar-btn flex items-center gap-3 px-4 py-3 rounded-lg font-semibold hover:bg-indigo-700 hover:text-white transition-colors btn-glow focus:outline-none focus:ring-2 focus:ring-indigo-400"
+    >
+      <i class="fas fa-home fa-lg"></i> RUMAH
+    </button>
+    <button
+      data-page="products"
+      class="sidebar-btn flex items-center gap-3 px-4 py-3 rounded-lg font-semibold hover:bg-indigo-700 hover:text-white transition-colors btn-glow focus:outline-none focus:ring-2 focus:ring-indigo-400"
+    >
+      <i class="fas fa-box-open fa-lg"></i> CUPLIKAN FITUR 
+    </button>
+    <button
+      data-page="purchase"
+      class="sidebar-btn flex items-center gap-3 px-4 py-3 rounded-lg font-semibold hover:bg-indigo-700 hover:text-white transition-colors btn-glow focus:outline-none focus:ring-2 focus:ring-indigo-400"
+    >
+      <i class="fas fa-shopping-cart fa-lg"></i> PEMBELIAN
+    </button>
+  </nav>
+  <div class="mt-auto px-6 py-4 text-indigo-400 text-sm text-center select-none">
+    &copy; 2024 - 2025 ® DanxyStore
+  </div>
+</aside>
+
+<div
+  id="overlay"
+  class="fixed inset-0 bg-black bg-opacity-50 hidden z-30"
+  tabindex="-1"
+  aria-hidden="true"
+></div>
+
+<main
+  id="mainContent"
+  class="flex-grow pt-20 px-6 pb-12 max-w-7xl mx-auto w-full relative"
+  tabindex="0"
+>
+  <section
+    id="page-home"
+    class="page-section space-y-8 max-w-4xl mx-auto"
+    aria-label="Home page"
+  >
+    <div class="flex flex-col items-center gap-6">
+      <img
+        src="https://files.catbox.moe/v3ht4v.JPG"
+        alt="Tampilan awal tools DanxyStore V8.3, a sleek modern tool interface with blue and white theme on dark background"
+        class="rounded-xl shadow-2xl w-full max-w-3xl object-cover"
+        draggable="false"
+      />
+      <h1 class="text-4xl font-extrabold text-center text-indigo-300 drop-shadow-lg">
+        DANXY TOOLS V8.3
+      </h1>
+      <p class="text-center text-indigo-200 max-w-xl leading-relaxed">
+        DanxyTools V8.3 adalah alat yang akan membantu di dunia digital anda
+        alat ini akan membantu anda berbagai cara, ayo aku tunggu kamu di member DanxyTools
+      </p>
+    </div>
+
+    <div class="flex justify-center gap-6 flex-wrap">
+      <button
+        id="btnExploreProducts"
+        class="btn-glow bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-3 rounded-full font-semibold text-white shadow-lg hover:from-blue-700 hover:to-indigo-700 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400 flex items-center gap-3"
+      >
+        <i class="fas fa-box-open fa-lg"></i> LIHAT FITUR TOOLS
+      </button>
+      <button
+        id="btnGoPurchase"
+        class="btn-glow bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 rounded-full font-semibold text-white shadow-lg hover:from-emerald-700 hover:to-green-700 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-400 flex items-center gap-3"
+      >
+        <i class="fas fa-shopping-cart fa-lg"></i> Pergi ke Pembelian
+      </button>
+    </div>
+  </section>
+
+  <section
+    id="page-products"
+    class="page-section hidden max-w-6xl mx-auto space-y-10"
+    aria-label="Products page"
+  >
+    <h2 class="text-3xl font-extrabold text-indigo-300 text-center drop-shadow-lg">
+      INFORMASI FITUR TOOLS V8.3
+    </h2>
+    <p class="text-center text-indigo-200 max-w-3xl mx-auto leading-relaxed">
+      CUPLIKAN FITUR DANXY TOOLS V8.3
+    </p>
+
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8"
+      role="list"
+      aria-label="List of products"
+    >
+      <article
+        class="bg-indigo-900 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 hover:shadow-2xl cursor-pointer btn-glow"
+        tabindex="0"
+        role="listitem"
+        aria-describedby="desc-prod-1"
+        data-product="1"
+      >
+        <img
+          src="https://files.catbox.moe/pdf8l2.JPG"
+          alt="Product 1: DanxyStore Tool Feature 1, a high-tech blue and black tool interface with glowing buttons"
+          class="w-full h-48 object-cover"
+          draggable="false"
+        />
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-indigo-200 mb-1">
+            MENU OSIN
+          </h3>
+          <p
+            id="desc-prod-1"
+            class="text-indigo-300 text-sm leading-relaxed"
+          >
+           INI DIA SEDIKIT CUPLIKAN FOTO MENU OSIN
+          </p>
+          <button
+            class="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2 rounded-lg font-semibold shadow-md hover:from-indigo-700 hover:to-blue-800 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400"
+            aria-label="Purchase Tool Feature 1"
+            data-product="1"
+          >
+            BELI SEKARANG
+          </button>
+        </div>
+      </article>
+
+      <article
+        class="bg-indigo-900 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 hover:shadow-2xl cursor-pointer btn-glow"
+        tabindex="0"
+        role="listitem"
+        aria-describedby="desc-prod-2"
+        data-product="2"
+      >
+        <img
+          src="https://files.catbox.moe/8r83cv.JPG"
+          alt="Product 2: DanxyStore Tool Feature 2, futuristic tool interface with blue neon highlights and dark background"
+          class="w-full h-48 object-cover"
+          draggable="false"
+        />
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-indigo-200 mb-1">
+            MENU TRACKING
+          </h3>
+          <p
+            id="desc-prod-2"
+            class="text-indigo-300 text-sm leading-relaxed"
+          >
+            INI DIA SEDIKIT CUPLIKAN FOTO MENU TRACKING
+          </p>
+          <button
+            class="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2 rounded-lg font-semibold shadow-md hover:from-indigo-700 hover:to-blue-800 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400"
+            aria-label="Purchase Tool Feature 2"
+            data-product="2"
+          >
+            BELI SEKARANG
+          </button>
+        </div>
+      </article>
+
+      <article
+        class="bg-indigo-900 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 hover:shadow-2xl cursor-pointer btn-glow"
+        tabindex="0"
+        role="listitem"
+        aria-describedby="desc-prod-3"
+        data-product="3"
+      >
+        <img
+          src="https://files.catbox.moe/a17qss.JPG"
+          alt="Product 3: DanxyStore Tool Feature 3, sleek tool interface with blue and white glowing elements on dark background"
+          class="w-full h-48 object-cover"
+          draggable="false"
+        />
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-indigo-200 mb-1">
+            FITUR DOR.NGL
+          </h3>
+          <p
+            id="desc-prod-3"
+            class="text-indigo-300 text-sm leading-relaxed"
+          >
+           FITUR DOR.NGL ADALAH TOOLS YANG AKAN MEMBOMBER/SPAM KE SEBUAH PESAN NGL
+          </p>
+          <button
+            class="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2 rounded-lg font-semibold shadow-md hover:from-indigo-700 hover:to-blue-800 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400"
+            aria-label="Purchase Tool Feature 3"
+            data-product="3"
+          >
+            BELI SEKARANG
+          </button>
+        </div>
+      </article>
+
+      <article
+        class="bg-indigo-900 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 hover:shadow-2xl cursor-pointer btn-glow"
+        tabindex="0"
+        role="listitem"
+        aria-describedby="desc-prod-4"
+        data-product="4"
+      >
+        <img
+          src="https://files.catbox.moe/qa6ktz.JPG"
+          alt="Product 4: DanxyStore Tool Feature 4, modern tool interface with blue neon glow and dark theme"
+          class="w-full h-48 object-cover"
+          draggable="false"
+        />
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-indigo-200 mb-1">
+            FITUR CHAT AI
+          </h3>
+          <p
+            id="desc-prod-4"
+            class="text-indigo-300 text-sm leading-relaxed"
+          >
+           FITUR CHAT AI ADALAH FITUR YANG AKAN MEMBANTU ANDA DAN MEMBERI SOLUSI, FITUR INI SANGAT COCOK UNTUK MRNEMANI KESEPIAN ANDA, TOOLS INI JUGA MEMBANTU SEKALI DI SAAT ANDA KESULITAN
+          </p>
+          <button
+            class="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2 rounded-lg font-semibold shadow-md hover:from-indigo-700 hover:to-blue-800 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400"
+            aria-label="Purchase Tool Feature 4"
+            data-product="4"
+          >
+            BELI SEKARANG
+          </button>
+        </div>
+      </article>
+
+      <article
+        class="bg-indigo-900 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 hover:shadow-2xl cursor-pointer btn-glow"
+        tabindex="0"
+        role="listitem"
+        aria-describedby="desc-prod-5"
+        data-product="5"
+      >
+        <img
+          src="https://files.catbox.moe/s1r18a.JPG"
+          alt="Product 5: DanxyStore Tool Feature 5, futuristic tool interface with blue highlights and dark background"
+          class="w-full h-48 object-cover"
+          draggable="false"
+        />
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-indigo-200 mb-1">
+            FITUE SPAM OTP
+          </h3>
+          <p
+            id="desc-prod-5"
+            class="text-indigo-300 text-sm leading-relaxed"
+          >
+            FITUR SPAM OTP ADALAH SUATU FITUR YANG AKAN MEMBOMBER/SPAM DI SEBUAH NOMOR DENGAN CARA MENGIRIM OTP BERULANG ULANG DARI API BERBAGAI PLATFORM
+          </p>
+          <button
+            class="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2 rounded-lg font-semibold shadow-md hover:from-indigo-700 hover:to-blue-800 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400"
+            aria-label="Purchase Tool Feature 5"
+            data-product="5"
+          >
+            BELI SEKARANG
+          </button>
+        </div>
+      </article>
+
+      <article
+        class="bg-indigo-900 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 hover:shadow-2xl cursor-pointer btn-glow"
+        tabindex="0"
+        role="listitem"
+        aria-describedby="desc-prod-6"
+        data-product="6"
+      >
+        <img
+          src="https://files.catbox.moe/b0bljj.JPG"
+          alt="Product 6: DanxyStore Tool Feature 6, sleek dark tool interface with blue neon accents"
+          class="w-full h-48 object-cover"
+          draggable="false"
+        />
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-indigo-200 mb-1">
+            FITUR TRACKING NIK
+          </h3>
+          <p
+            id="desc-prod-6"
+            class="text-indigo-300 text-sm leading-relaxed"
+          >
+           TRACKING NIK ADALAH FITUR YANG AKAN MEMBACA INFORMASI IDENTITAS SESEORANG MENGGUNAKAN 16 NOMOR NIK
+          </p>
+          <button
+            class="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2 rounded-lg font-semibold shadow-md hover:from-indigo-700 hover:to-blue-800 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400"
+            aria-label="Purchase Tool Feature 6"
+            data-product="6"
+          >
+            BELI SEKARANG
+          </button>
+        </div>
+      </article>
+
+      <article
+        class="bg-indigo-900 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 hover:shadow-2xl cursor-pointer btn-glow"
+        tabindex="0"
+        role="listitem"
+        aria-describedby="desc-prod-7"
+        data-product="7"
+      >
+        <img
+          src="https://files.catbox.moe/dw3rm2.JPG"
+          alt="Product 7: DanxyStore Tool Feature 7, modern tool interface with blue glowing buttons on dark background"
+          class="w-full h-48 object-cover"
+          draggable="false"
+        />
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-indigo-200 mb-1">
+            FITUR SPAM GMAIL
+          </h3>
+          <p
+            id="desc-prod-7"
+            class="text-indigo-300 text-sm leading-relaxed"
+          >
+            FITUR SPAM GAMAIL ADALAH FITUR YANG AKAN MEMBOMBER/SPAM KE GMAIL DENGAN CARA SIMPLE MEMASUKAN GMAIL TARGET DAN PESAN YANG INI DI KIRIM KE TARGET DAN JUMLAH YANG INGIN DI KIRIM SETELAH ITU TOOLS INJ AKAN MEMBOMBER GMAIL TARGET DENGAN MEMBABI BUTA.
+          </p>
+          <button
+            class="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2 rounded-lg font-semibold shadow-md hover:from-indigo-700 hover:to-blue-800 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400"
+            aria-label="Purchase Tool Feature 7"
+            data-product="7"
+          >
+            BELI SEKARANG
+          </button>
+        </div>
+      </article>
+
+      <article
+        class="bg-indigo-900 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 hover:shadow-2xl cursor-pointer btn-glow"
+        tabindex="0"
+        role="listitem"
+        aria-describedby="desc-prod-8"
+        data-product="8"
+      >
+        <img
+          src="https://files.catbox.moe/7x6cud.JPG"
+          alt="Product 8: DanxyStore Tool Feature 8, dark tool interface with blue neon highlights and futuristic design"
+          class="w-full h-48 object-cover"
+          draggable="false"
+        />
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-indigo-200 mb-1">
+            FITUR DEFACE WEBSITE
+          </h3>
+          <p
+            id="desc-prod-8"
+            class="text-indigo-300 text-sm leading-relaxed"
+          >
+            FIRUR DEFACE WEBSITE ADALAH TOOLS YANG MEMUNGKINKAN MERUBAH TAMPILAN WEBSITE DENGAN 1× KETUK SAJA.
+          </p>
+          <button
+            class="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2 rounded-lg font-semibold shadow-md hover:from-indigo-700 hover:to-blue-800 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400"
+            aria-label="Purchase Tool Feature 8"
+            data-product="8"
+          >
+            BELI SEKARANG
+          </button>
+        </div>
+      </article>
+
+      <article
+        class="bg-indigo-900 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 hover:shadow-2xl cursor-pointer btn-glow"
+        tabindex="0"
+        role="listitem"
+        aria-describedby="desc-prod-9"
+        data-product="9"
+      >
+        <img
+          src="https://files.catbox.moe/a4yvtj.JPG"
+          alt="Product 9: DanxyStore Tool Feature 9, futuristic tool interface with blue glowing elements on dark background"
+          class="w-full h-48 object-cover"
+          draggable="false"
+        />
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-indigo-200 mb-1">
+            TRACKING IP
+          </h3>
+          <p
+            id="desc-prod-9"
+            class="text-indigo-300 text-sm leading-relaxed"
+          >
+           FITUR TRACKIP IP ADALAH FITUR YANG AKAN MEMBERIKAN INFORMASI DARI SEBUAH IP
+          </p>
+          <button
+            class="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2 rounded-lg font-semibold shadow-md hover:from-indigo-700 hover:to-blue-800 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400"
+            aria-label="Purchase Tool Feature 9"
+            data-product="9"
+          >
+            BELI SEKARANG
+          </button>
+        </div>
+      </article>
+
+      <article
+        class="bg-indigo-900 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 hover:shadow-2xl cursor-pointer btn-glow"
+        tabindex="0"
+        role="listitem"
+        aria-describedby="desc-prod-10"
+        data-product="10"
+      >
+        <img
+          src="https://files.catbox.moe/llk9hi.JPG"
+          alt="Product 10: DanxyStore Tool Feature 10, sleek dark tool interface with blue neon glow and futuristic design"
+          class="w-full h-48 object-cover"
+          draggable="false"
+        />
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-indigo-200 mb-1">
+            FITUR PROVIDER
+          </h3>
+          <p
+            id="desc-prod-10"
+            class="text-indigo-300 text-sm leading-relaxed"
+          >
+           FITUR PROVIDER ADALAH FITUR YANG AKAN MEMBERIKAN ANDA INFORMASI JENIS NOMOR APA YANG DI PAKAI CONTOH JENIS KARTU XL, SMARTFREN, DAN LAIN SEBAGAINYA
+          </p>
+          <button
+            class="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2 rounded-lg font-semibold shadow-md hover:from-indigo-700 hover:to-blue-800 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400"
+            aria-label="Purchase Tool Feature 10"
+            data-product="10"
+          >
+            BELI SEKARANG
+          </button>
+        </div>
+      </article>
+
+      <article
+        class="bg-indigo-900 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 hover:shadow-2xl cursor-pointer btn-glow"
+        tabindex="0"
+        role="listitem"
+        aria-describedby="desc-prod-11"
+        data-product="11"
+      >
+        <img
+          src="https://files.catbox.moe/o195bk.JPG"
+          alt="Product 11: DanxyStore Tool Feature 11, futuristic tool interface with blue glowing buttons on dark background"
+          class="w-full h-48 object-cover"
+          draggable="false"
+        />
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-indigo-200 mb-1">
+            INI DIA MENU SPAMER
+          </h3>
+          <p
+            id="desc-prod-11"
+            class="text-indigo-300 text-sm leading-relaxed"
+          >
+           MENU SPAMMER INI MENCANGKUP 4 FITUR YAITU SPAM GMAIL, SPAM OTP, SPAM TELEGRAM DAN SPAM NGL.
+          </p>
+          <button
+            class="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2 rounded-lg font-semibold shadow-md hover:from-indigo-700 hover:to-blue-800 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400"
+            aria-label="Purchase Tool Feature 11"
+            data-product="11"
+          >
+            BELI SEKARANG
+          </button>
+        </div>
+      </article>
+
+      <article
+        class="bg-indigo-900 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 hover:shadow-2xl cursor-pointer btn-glow"
+        tabindex="0"
+        role="listitem"
+        aria-describedby="desc-prod-12"
+        data-product="12"
+      >
+        <img
+          src="https://files.catbox.moe/kj8bgm.JPG"
+          alt="Product 12: DanxyStore Tool Feature 12, sleek dark tool interface with blue neon highlights"
+          class="w-full h-48 object-cover"
+          draggable="false"
+        />
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-indigo-200 mb-1">
+            FITUR LEAKSIN
+          </h3>
+          <p
+            id="desc-prod-12"
+            class="text-indigo-300 text-sm leading-relaxed"
+          >
+           FITUR LEAKSIN ADALAH FITUE YANG AKAN MEMBERIKAN ANDA INFORMASI JEJAK AKUN JEJAK DIGITAL ORANG SECARA PUBLIK
+          </p>
+          <button
+            class="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2 rounded-lg font-semibold shadow-md hover:from-indigo-700 hover:to-blue-800 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400"
+            aria-label="Purchase Tool Feature 12"
+            data-product="12"
+          >
+            BELI SEKARANG
+          </button>
+        </div>
+      </article>
+
+      <article
+        class="bg-indigo-900 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 hover:shadow-2xl cursor-pointer btn-glow"
+        tabindex="0"
+        role="listitem"
+        aria-describedby="desc-prod-13"
+        data-product="13"
+      >
+        <img
+          src="https://files.catbox.moe/g00897.JPG"
+          alt="Product 13: DanxyStore Tool Feature 13, futuristic tool interface with blue glowing elements on dark background"
+          class="w-full h-48 object-cover"
+          draggable="false"
+        />
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-indigo-200 mb-1">
+            FITUR BOMBER TELE
+          </h3>
+          <p
+            id="desc-prod-13"
+            class="text-indigo-300 text-sm leading-relaxed"
+          >
+            FITUR BOMBER TELE ADALAH FITUR YANG AKAN MENGIRIM SEBUAH PESAN KE TELEGRAM DENGAN BRUTAL
+          </p>
+          <button
+            class="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2 rounded-lg font-semibold shadow-md hover:from-indigo-700 hover:to-blue-800 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400"
+            aria-label="Purchase Tool Feature 13"
+            data-product="13"
+          >
+            BELI SEKARANG
+          </button>
+        </div>
+      </article>
+
+      <article
+        class="bg-indigo-900 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 hover:shadow-2xl cursor-pointer btn-glow"
+        tabindex="0"
+        role="listitem"
+        aria-describedby="desc-prod-14"
+        data-product="14"
+      >
+        <img
+          src="https://files.catbox.moe/zg4ml7.jpg"
+          alt="Product 14: DanxyStore Tool Feature 14, sleek dark tool interface with blue neon glow and futuristic design"
+          class="w-full h-48 object-cover"
+          draggable="false"
+        />
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-indigo-200 mb-1">
+            TRACKING GEO IP
+          </h3>
+          <p
+            id="desc-prod-14"
+            class="text-indigo-300 text-sm leading-relaxed"
+          >
+            TRACKING GEO IP ADALAH FITUR YANG AKAN MEMBERIKAN ANDA INFORMASI DARI SEBUAH IP, DAN INFORMASI YANG DI SAPAT LUMAYAN MEMUASKAN 1. MENDAPATKAN LOKASI 2. MENDAPATKAN GMAP LOKASI DAN LAIN SEBAGAINYA
+          </p>
+          <button
+            class="mt-4 w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2 rounded-lg font-semibold shadow-md hover:from-indigo-700 hover:to-blue-800 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-400"
+            aria-label="Purchase Tool Feature 14"
+            data-product="14"
+          >
+            BELI SEKARANG
+          </button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Purchase Page -->
+  <section
+    id="page-purchase"
+    class="page-section hidden max-w-3xl mx-auto space-y-8 text-center"
+    aria-label="Purchase page"
+  >
+    <h2 class="text-3xl font-extrabold text-indigo-300 drop-shadow-lg">
+      Ready to Purchase?
+    </h2>
+    <p class="text-indigo-200 text-lg max-w-xl mx-auto leading-relaxed">
+      Klik tombol di bawah ini untuk memulai proses pembelian Anda. Anda akan
+dialihkan ke obrolan toko Telegram kami untuk transaksi yang cepat dan personal.
+    </p>
+    <button
+      id="btnTelegramPurchase"
+      class="btn-glow bg-gradient-to-r from-green-600 to-emerald-600 px-8 py-4 rounded-full font-extrabold text-white shadow-lg hover:from-emerald-700 hover:to-green-700 transition-transform transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-emerald-400 flex items-center justify-center gap-4 mx-auto"
+      aria-label="Redirect to Telegram DanxyStore"
+    >
+      <i class="fab fa-telegram-plane fa-2x"></i> Buy via Telegram
+    </button>
+  </section>
+</main>
+
+<script>
+  // Matrix background animation
+  const canvas = document.getElementById("matrix-canvas");
+  const ctx = canvas.getContext("2d");
+  let width, height;
+  let columns;
+  let drops = [];
+
+  function resizeCanvas() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    columns = Math.floor(width / 20);
+    drops = [];
+    for (let i = 0; i < columns; i++) {
+      drops[i] = Math.random() * height;
+    }
+  }
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  const letters =
+    "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  function drawMatrix() {
+    ctx.fillStyle = "rgba(15, 23, 42, 0.1)";
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.fillStyle = "#3b82f6";
+    ctx.font = "18px monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = letters.charAt(
+        Math.floor(Math.random() * letters.length)
+      );
+      ctx.fillText(text, i * 20, drops[i] * 20);
+
+      if (drops[i] * 20 > height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i] += 0.75;
+    }
+  }
+  setInterval(drawMatrix, 40);
+
+  // Sidebar toggle logic
+  const sidebarToggle = document.getElementById("sidebarToggle");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  const pageSections = document.querySelectorAll(".page-section");
+  const sidebarButtons = document.querySelectorAll(".sidebar-btn");
+  const btnExploreProducts = document.getElementById("btnExploreProducts");
+  const btnGoPurchase = document.getElementById("btnGoPurchase");
+  const btnTelegramPurchase = document.getElementById("btnTelegramPurchase");
+
+  function openSidebar() {
+    sidebar.classList.remove("-translate-x-full");
+    overlay.classList.remove("hidden");
+    sidebarToggle.setAttribute("aria-expanded", "true");
+  }
+  function closeSidebar() {
+    sidebar.classList.add("-translate-x-full");
+    overlay.classList.add("hidden");
+    sidebarToggle.setAttribute("aria-expanded", "false");
+  }
+
+  sidebarToggle.addEventListener("click", () => {
+    if (sidebar.classList.contains("-translate-x-full")) {
+      openSidebar();
+    } else {
+      closeSidebar();
+    }
+  });
+
+  overlay.addEventListener("click", closeSidebar);
+
+  // Page navigation
+  function showPage(pageId) {
+    pageSections.forEach((section) => {
+      if (section.id === "page-" + pageId) {
+        section.classList.remove("hidden");
+        section.classList.add("animate-fadeIn");
+        section.setAttribute("tabindex", "0");
+        section.focus();
+      } else {
+        section.classList.add("hidden");
+        section.classList.remove("animate-fadeIn");
+        section.removeAttribute("tabindex");
+      }
+    });
+    closeSidebar();
+  }
+
+  sidebarButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const page = btn.getAttribute("data-page");
+      if (page === "purchase") {
+        // Redirect to telegram immediately
+        window.open("https://t.me/DanxyStore", "_blank", "noopener");
+        closeSidebar();
+        return;
+      }
+      showPage(page);
+    });
+  });
+
+  btnExploreProducts.addEventListener("click", () => {
+    showPage("products");
+  });
+  btnGoPurchase.addEventListener("click", () => {
+    showPage("purchase");
+  });
+
+  btnTelegramPurchase.addEventListener("click", () => {
+    window.open("https://t.me/DanxyStore", "_blank", "noopener");
+  });
+
+  // BELI SEKARANG buttons on products redirect to purchase page
+  document.querySelectorAll("#page-products button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      showPage("purchase");
+    });
+  });
+
+  // Live time clock
+  const liveTime = document.getElementById("liveTime");
+  function updateTime() {
+    const now = new Date();
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+      timeZoneName: "short",
+    };
+    liveTime.textContent = now.toLocaleString("en-US", options);
+  }
+  updateTime();
+  setInterval(updateTime, 1000);
+
+  // Keyboard accessibility for sidebar buttons
+  sidebarButtons.forEach((btn) => {
+    btn.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        btn.click();
+      }
+    });
+  });
+
+  // Keyboard accessibility for product cards (Enter triggers BELI SEKARANG)
+  document.querySelectorAll("#page-products article").forEach((card) => {
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const buyBtn = card.querySelector("button");
+        if (buyBtn) buyBtn.click();
+      }
+    });
+  });
+</script>
+
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.4s ease forwards;
+  }
+</style>
+</body>
+</html>
